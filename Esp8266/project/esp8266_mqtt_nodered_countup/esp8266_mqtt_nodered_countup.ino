@@ -21,11 +21,19 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+#define SENSOR 15 // GPIO15 = full name.
+#define CLR 13
+#define LED 2
+
+int counter = 0;
+
+
+
 // Update these with values suitable for your network.
 
-const char* ssid = "........";
-const char* password = "........";
-const char* mqtt_server = "broker.mqtt-dashboard.com";
+const char* ssid = "Pawan";
+const char* password = "a12345678";
+const char* mqtt_server = "35.197.147.237";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -89,7 +97,7 @@ void reconnect() {
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("outTopic", "hello world");
+      client.publish("atthana/shout", "hello world from once connected");  // set outtopic to release to mqtt server.
       // ... and resubscribe
       client.subscribe("inTopic");
     } else {
@@ -103,8 +111,14 @@ void reconnect() {
 }
 
 void setup() {
+  Serial.println("=======Setup=======");
+  pinMode(SENSOR, INPUT); // GPIO15 = D8 use for temporary, real sensor will use Vin pin instead it.
+  pinMode(CLR, INPUT);  // GPIO13 = D7
+  pinMode(LED, OUTPUT); // GPIO2 = D4
   pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
-  Serial.begin(115200);
+
+  
+  Serial.begin(19200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
@@ -124,6 +138,6 @@ void loop() {
     snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
     Serial.print("Publish message: ");
     Serial.println(msg);
-    client.publish("outTopic", msg);
+    client.publish("atthana/shout", msg);
   }
 }

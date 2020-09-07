@@ -13,4 +13,4 @@ A Small project about counting up the goods to show in Node-Red dashboard.
 ![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266/Photos/vscode-serialmonitor.jpg?raw=true)
 
 # ps.
-If you are using VScode, when uploading process need to close "Serial monitor" first.
+If you are using VScode, when uploading process need to close "Serial monitor" of Arduino IDE first.

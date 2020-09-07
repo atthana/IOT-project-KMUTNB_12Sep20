@@ -140,13 +140,13 @@ void loop() {
 
       if(digitalRead(CNT)==LOW){
       while(digitalRead(CNT)==LOW){}
-        Serial.println("D1 is pressed");
+        Serial.println("COUNT is pressed");
         snprintf (msg, MSG_BUFFER_SIZE, "S2");
         client.publish("atthana/shout", msg);
         digitalWrite(LED, LOW);  // LED Buildin == ON
     } else if(digitalRead(DOWN)==LOW){
       while(digitalRead(DOWN)==LOW){}
-        Serial.println("D2 is pressed");
+        Serial.println("CLEAR is pressed");
         snprintf (msg, MSG_BUFFER_SIZE, "S3");
         client.publish("atthana/shout", msg);
         digitalWrite(LED, LOW);  // LED Buildin == ON

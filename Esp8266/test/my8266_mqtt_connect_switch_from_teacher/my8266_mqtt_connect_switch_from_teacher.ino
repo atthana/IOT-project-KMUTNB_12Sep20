@@ -36,7 +36,8 @@ PubSubClient client(espClient);
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE  (50)
 char msg[MSG_BUFFER_SIZE];
-int value = 0;
+int countValue = 0;
+String test;
 
 void setup_wifi() {
 
@@ -138,20 +139,35 @@ void loop() {
 //
 //  }
 
-      if(digitalRead(CNT)==LOW){
+    //====== when count sensor active =====
+    if(digitalRead(CNT)==LOW){
       while(digitalRead(CNT)==LOW){}
-        Serial.println("COUNT is pressed");
-        snprintf (msg, MSG_BUFFER_SIZE, "S2");
+        countValue = countValue + 1;
+
+        // test = String(countValue);      // ยัง convert String เพื่อส่งออกไป nodered ไม่ได้นะ     
+
+        Serial.print("COUNT is pressed: ");
+        Serial.println(countValue);
+        snprintf (msg, MSG_BUFFER_SIZE, "COUNT Active");  // Messaage go to MQTT server.
         client.publish("atthana/shout", msg);
         digitalWrite(LED, LOW);  // LED Buildin == ON
-    } else if(digitalRead(DOWN)==LOW){
+    } 
+    
+    //====== when clear switch active =====
+    else if(digitalRead(DOWN)==LOW){
       while(digitalRead(DOWN)==LOW){}
-        Serial.println("CLEAR is pressed");
-        snprintf (msg, MSG_BUFFER_SIZE, "S3");
+        countValue = 0;
+        Serial.print("CLEAR is pressed: ");
+        Serial.println(countValue);
+        snprintf (msg, MSG_BUFFER_SIZE, "CLEAR is pressed"); // Messaage go to MQTT server.
         client.publish("atthana/shout", msg);
         digitalWrite(LED, LOW);  // LED Buildin == ON
-    } else {
+    } 
+    
+    else {
       digitalWrite(LED, HIGH);  // LED Buildin == OFF
     }
   
 }
+
+

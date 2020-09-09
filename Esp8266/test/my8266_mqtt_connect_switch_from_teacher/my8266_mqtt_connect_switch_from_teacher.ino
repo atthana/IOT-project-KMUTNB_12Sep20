@@ -21,11 +21,14 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <string>
+#include <LiquidCrystal_I2C.h>
+#include <Wire.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #define COUNT 10 // SD3 use for temporary during no input sensor.
-#define LED 2 // D4
-#define CLEAR 13  // D7
-
+#define LED 2    // D4
+#define CLEAR 13 // D7
 
 // Update these with values suitable for your network.
 
@@ -81,7 +84,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1')
   {
-    digitalWrite(LED, LOW); // Turn the LED on 
+    digitalWrite(LED, LOW); // Turn the LED on
   }
   else
   {
@@ -120,12 +123,25 @@ void reconnect()
 
 void setup()
 {
-  pinMode(COUNT, INPUT);  // D1 = GPIO5
-  pinMode(CLEAR, INPUT); // D2 is GPIO13
-  pinMode(LED, OUTPUT); // LED Builtin D4 = GPIO2
 
+  pinMode(COUNT, INPUT); // D1 = GPIO5
+  pinMode(CLEAR, INPUT); // D2 is GPIO13
+  pinMode(LED, OUTPUT);  // LED Builtin D4 = GPIO2
   pinMode(BUILTIN_LED, OUTPUT); // Initialize the BUILTIN_LED pin as an output
-  Serial.begin(19200);
+  Serial.begin(115200);
+  Wire.begin(D2, D1); //Use predefined PINS consts
+  lcd.begin(20, 4);   // The begin call takes the width and height. This
+                      // Should match the number provided to the constructor.
+
+  lcd.backlight(); // Turn on the backlight.
+
+  lcd.home();
+
+  lcd.setCursor(0, 0); // Move the cursor at origin
+  lcd.print("COUNTING SYSTEM");
+  lcd.setCursor(6, 1);
+  lcd.print("20");
+  // Serial.begin(19200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
@@ -155,7 +171,8 @@ void loop()
   if (digitalRead(COUNT) == LOW)
   {
     while (digitalRead(COUNT) == LOW)
-    {}
+    {
+    }
     countValue = countValue + 1;
     itoa(countValue, sCountValue, 10);
     Serial.println(countValue);
@@ -168,7 +185,8 @@ void loop()
   else if (digitalRead(CLEAR) == LOW)
   {
     while (digitalRead(CLEAR) == LOW)
-    {}
+    {
+    }
     countValue = 0;
     itoa(countValue, sCountValue, 10);
     Serial.println(countValue);

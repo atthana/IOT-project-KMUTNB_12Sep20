@@ -124,23 +124,21 @@ void reconnect()
 void setup()
 {
 
-  pinMode(COUNT, INPUT); // D1 = GPIO5
-  pinMode(CLEAR, INPUT); // D2 is GPIO13
-  pinMode(LED, OUTPUT);  // LED Builtin D4 = GPIO2
+  pinMode(COUNT, INPUT);        // D1 = GPIO5
+  pinMode(CLEAR, INPUT);        // D2 is GPIO13
+  pinMode(LED, OUTPUT);         // LED Builtin D4 = GPIO2
   pinMode(BUILTIN_LED, OUTPUT); // Initialize the BUILTIN_LED pin as an output
   Serial.begin(115200);
   Wire.begin(D2, D1); //Use predefined PINS consts
-  lcd.begin(20, 4);   // The begin call takes the width and height. This
+  lcd.begin(16, 2);   // The begin call takes the width and height. This
                       // Should match the number provided to the constructor.
-
-  lcd.backlight(); // Turn on the backlight.
-
+  lcd.backlight();    // Turn on the backlight.
   lcd.home();
-
   lcd.setCursor(0, 0); // Move the cursor at origin
   lcd.print("COUNTING SYSTEM");
   lcd.setCursor(6, 1);
-  lcd.print("20");
+  lcd.print("0");
+
   // Serial.begin(19200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
@@ -176,6 +174,8 @@ void loop()
     countValue = countValue + 1;
     itoa(countValue, sCountValue, 10);
     Serial.println(countValue);
+    lcd.setCursor(6, 1);
+    lcd.print(sCountValue);
     snprintf(msg, MSG_BUFFER_SIZE, sCountValue); // Message to MQTT server.
     client.publish("atthana/shout", msg);
     digitalWrite(LED, LOW); // LED Build in = ON
@@ -190,6 +190,12 @@ void loop()
     countValue = 0;
     itoa(countValue, sCountValue, 10);
     Serial.println(countValue);
+    lcd.clear();
+    lcd.home();
+    lcd.setCursor(0, 0); // Move the cursor at origin
+    lcd.print("COUNTING SYSTEM");
+    lcd.setCursor(6, 1);
+    lcd.print(sCountValue);
     snprintf(msg, MSG_BUFFER_SIZE, sCountValue); // Message to MQTT server.
     client.publish("atthana/shout", msg);
     digitalWrite(LED, LOW); // LED Build in = ON
@@ -200,3 +206,5 @@ void loop()
     digitalWrite(LED, HIGH); // LED Build in == OFF
   }
 }
+
+

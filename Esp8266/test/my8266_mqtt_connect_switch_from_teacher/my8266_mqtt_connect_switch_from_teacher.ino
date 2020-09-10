@@ -29,6 +29,8 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define COUNT 10 // SD3 use for temporary during no input sensor.
 #define LED 2    // D4
 #define CLEAR 13 // D7
+#define START 14 // D5
+#define STOP 12  // D6
 
 // Update these with values suitable for your network.
 
@@ -68,6 +70,7 @@ void setup_wifi()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  clearLCD(3, "NOW READY");
 }
 
 void callback(char *topic, byte *payload, unsigned int length)
@@ -123,21 +126,28 @@ void reconnect()
 
 void setup()
 {
-
-  pinMode(COUNT, INPUT);        // D1 = GPIO5
-  pinMode(CLEAR, INPUT);        // D2 is GPIO13
-  pinMode(LED, OUTPUT);         // LED Builtin D4 = GPIO2
+  pinMode(START, INPUT);
+  pinMode(STOP, INPUT);
+  pinMode(COUNT, INPUT);
+  pinMode(CLEAR, INPUT);
+  pinMode(LED, OUTPUT);
   pinMode(BUILTIN_LED, OUTPUT); // Initialize the BUILTIN_LED pin as an output
   Serial.begin(115200);
   Wire.begin(D2, D1); //Use predefined PINS consts
   lcd.begin(16, 2);   // The begin call takes the width and height. This
                       // Should match the number provided to the constructor.
   lcd.backlight();    // Turn on the backlight.
+  
+  // lcd.home();
+  // lcd.setCursor(0, 0); // Move the cursor at origin
+  // lcd.print("COUNTING SYSTEM");
+  // lcd.setCursor(6, 1);
+  // lcd.print("0");
   lcd.home();
   lcd.setCursor(0, 0); // Move the cursor at origin
   lcd.print("COUNTING SYSTEM");
-  lcd.setCursor(6, 1);
-  lcd.print("0");
+  lcd.setCursor(1, 1);
+  lcd.print("CONNECTING...");
 
   // Serial.begin(19200);
   setup_wifi();
@@ -190,12 +200,7 @@ void loop()
     countValue = 0;
     itoa(countValue, sCountValue, 10);
     Serial.println(countValue);
-    lcd.clear();
-    lcd.home();
-    lcd.setCursor(0, 0); // Move the cursor at origin
-    lcd.print("COUNTING SYSTEM");
-    lcd.setCursor(6, 1);
-    lcd.print(sCountValue);
+    clearLCD(6, sCountValue);
     snprintf(msg, MSG_BUFFER_SIZE, sCountValue); // Message to MQTT server.
     client.publish("atthana/shout", msg);
     digitalWrite(LED, LOW); // LED Build in = ON
@@ -207,4 +212,12 @@ void loop()
   }
 }
 
-
+void clearLCD(int firstPosition, String sCountValue)
+{
+  lcd.clear();
+  lcd.home();
+  lcd.setCursor(0, 0); // Move the cursor to origin
+  lcd.print("COUNTING SYSTEM");
+  lcd.setCursor(firstPosition, 1);
+  lcd.print(sCountValue);
+}

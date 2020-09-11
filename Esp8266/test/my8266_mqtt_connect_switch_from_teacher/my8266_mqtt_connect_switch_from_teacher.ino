@@ -27,10 +27,11 @@
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #define COUNT 10 // SD3 use for temporary during no input sensor.
-#define LED 2    // D4
+#define LED_STATUS 2    // D4
 #define CLEAR 13 // D7
 #define START 14 // D5
 #define STOP 12  // D6
+#define BUZZER 0  // D3
 
 // Update these with values suitable for your network.
 
@@ -89,7 +90,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1')
   {
-    digitalWrite(LED, LOW); // Turn the LED on
+    digitalWrite(BUILTIN_LED, LOW); // Turn the LED on
   }
   else
   {
@@ -132,8 +133,9 @@ void setup()
   pinMode(STOP, INPUT);
   pinMode(COUNT, INPUT);
   pinMode(CLEAR, INPUT);
-  pinMode(LED, OUTPUT);
-  pinMode(BUILTIN_LED, OUTPUT); // Initialize the BUILTIN_LED pin as an output
+  pinMode(LED_STATUS, OUTPUT);
+  pinMode(BUILTIN_LED, OUTPUT); 
+  pinMode(BUZZER, OUTPUT);
   Serial.begin(115200);
   Wire.begin(D2, D1); //Use predefined PINS consts
   lcd.begin(16, 2);   // The begin call takes the width and height. This
@@ -219,11 +221,12 @@ void loop()
     lcd.print(sCountValue);
     snprintf(msg, MSG_BUFFER_SIZE, sCountValue); 
     client.publish("atthana/shout", msg); // Message to MQTT server.
-    digitalWrite(LED, LOW); // LED Build in = ON
-  }
+    ledStatusAndBeeper();
+  } 
+  
 
   //====== Clear count value =====
-  else if (digitalRead(CLEAR) == LOW && isStart == true && countValue != 0)
+  if (digitalRead(CLEAR) == LOW && isStart == true && countValue != 0)
   {
     while (digitalRead(CLEAR) == LOW)
     {
@@ -231,14 +234,9 @@ void loop()
     clearValue();
     Serial.println(countValue);
     clearLCD(6, sCountValue);
-    digitalWrite(LED, LOW); // LED Build in = ON
-  }
+  } 
 
-  else
-  {
-    digitalWrite(LED, HIGH); // LED Build in == OFF
-  }
-  //=============================
+  
 }
 
 void clearLCD(int firstPosition, String sCountValue)
@@ -256,3 +254,13 @@ void clearValue()
   itoa(countValue, sCountValue, 10);
   // Serial.println(countValue);
 }
+
+void ledStatusAndBeeper(){
+  digitalWrite(LED_STATUS, HIGH);
+  digitalWrite(BUZZER, HIGH);
+  delay(100);
+  digitalWrite(LED_STATUS, LOW);
+  digitalWrite(BUZZER, LOW);
+}
+
+

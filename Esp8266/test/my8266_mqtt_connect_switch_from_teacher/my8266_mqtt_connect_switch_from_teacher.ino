@@ -45,6 +45,8 @@ unsigned long lastMsg = 0;
 char msg[MSG_BUFFER_SIZE];
 int countValue = 0;
 char sCountValue[5];
+bool isStart = false;
+bool isStop = true;
 
 void setup_wifi()
 {
@@ -137,7 +139,7 @@ void setup()
   lcd.begin(16, 2);   // The begin call takes the width and height. This
                       // Should match the number provided to the constructor.
   lcd.backlight();    // Turn on the backlight.
-  
+
   // lcd.home();
   // lcd.setCursor(0, 0); // Move the cursor at origin
   // lcd.print("COUNTING SYSTEM");
@@ -175,8 +177,37 @@ void loop()
   //
   //  }
 
+  //====== Check START button =====
+  if (digitalRead(START) == LOW && isStop == true)
+  {
+    snprintf(msg, MSG_BUFFER_SIZE, "START");
+    client.publish("atthana/shout", msg); // Message to MQTT server.
+    Serial.println("START");
+    clearLCD(6, "0");
+    isStart = true;
+    isStop = false;
+  }
+
+  //====== Check STOP button =====
+  if (digitalRead(STOP) == LOW && isStart == true)
+  {
+    itoa(countValue, sCountValue, 10);
+    snprintf(msg, MSG_BUFFER_SIZE, "STOP");
+    client.publish("atthana/shout", msg); // Message to MQTT server.
+    snprintf(msg, MSG_BUFFER_SIZE, sCountValue); 
+    client.publish("atthana/shout", msg); // Message to MQTT server.
+    Serial.println("END");
+    Serial.print("Total = ");
+    Serial.println(countValue);
+    snprintf(msg, MSG_BUFFER_SIZE, sCountValue); 
+    clearValue();
+    isStop = true;
+    isStart = false;
+    clearLCD(6, "END");
+  }
+
   //=========== Count up ===========
-  if (digitalRead(COUNT) == LOW)
+  if (digitalRead(COUNT) == LOW && isStart == true)
   {
     while (digitalRead(COUNT) == LOW)
     {
@@ -186,23 +217,20 @@ void loop()
     Serial.println(countValue);
     lcd.setCursor(6, 1);
     lcd.print(sCountValue);
-    snprintf(msg, MSG_BUFFER_SIZE, sCountValue); // Message to MQTT server.
-    client.publish("atthana/shout", msg);
+    snprintf(msg, MSG_BUFFER_SIZE, sCountValue); 
+    client.publish("atthana/shout", msg); // Message to MQTT server.
     digitalWrite(LED, LOW); // LED Build in = ON
   }
 
   //====== Clear count value =====
-  else if (digitalRead(CLEAR) == LOW)
+  else if (digitalRead(CLEAR) == LOW && isStart == true && countValue != 0)
   {
     while (digitalRead(CLEAR) == LOW)
     {
     }
-    countValue = 0;
-    itoa(countValue, sCountValue, 10);
+    clearValue();
     Serial.println(countValue);
     clearLCD(6, sCountValue);
-    snprintf(msg, MSG_BUFFER_SIZE, sCountValue); // Message to MQTT server.
-    client.publish("atthana/shout", msg);
     digitalWrite(LED, LOW); // LED Build in = ON
   }
 
@@ -210,6 +238,7 @@ void loop()
   {
     digitalWrite(LED, HIGH); // LED Build in == OFF
   }
+  //=============================
 }
 
 void clearLCD(int firstPosition, String sCountValue)
@@ -220,4 +249,10 @@ void clearLCD(int firstPosition, String sCountValue)
   lcd.print("COUNTING SYSTEM");
   lcd.setCursor(firstPosition, 1);
   lcd.print(sCountValue);
+}
+void clearValue()
+{
+  countValue = 0;
+  itoa(countValue, sCountValue, 10);
+  // Serial.println(countValue);
 }

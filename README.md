@@ -10,7 +10,7 @@ A Small project about counting up the goods to show in Node-Red dashboard.
 
 
 # Schematic
-![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/master/Photos/iot-countup.png?raw=true)<br><br>
+![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266/Photos/iot-countup2.png?raw=true)<br><br>
 
 ---
 # VS code with Serial monitor

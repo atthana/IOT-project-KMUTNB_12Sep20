@@ -9,6 +9,10 @@ A Small project about counting up the goods to show in Node-Red dashboard.
 ![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266/Photos/architect.jpg?raw=true)
 
 
+# Flowchart.
+`https://drive.google.com/file/d/1l2zOIKBI1-uYF-2bAO9LUGlsAtI-5RyE/view?usp=sharing`
+![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266-connect-nodered-PNun/Photos/flowchart.png?raw=true)
+
 # Schematic
 ![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266-connect-nodered-PNun/Photos/iot-countup3_no_clear_btn.png?raw=true)<br><br>
 
@@ -24,6 +28,9 @@ A Small project about counting up the goods to show in Node-Red dashboard.
 `https://shorturl.at/cQRV2`
 ![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266-connect-nodered-PNun/Photos/google_sheet.jpg?raw=true)<br><br>
 
+
+# Slides
+`https://drive.google.com/file/d/1H7SZNtp1VZVn1jjtKr9EnoXbGGBRhRMS/view?usp=sharing`
 ---
 # VS code with Serial monitor
 ![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266/Photos/vscode-serialmonitor.jpg?raw=true)

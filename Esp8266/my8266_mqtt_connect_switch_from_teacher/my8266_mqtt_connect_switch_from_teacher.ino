@@ -194,10 +194,15 @@ void loop()
   if (digitalRead(STOP) == LOW && isStart == true)
   {
     itoa(countValue, sCountValue, 10);
+    
+    // Send "STOP"
     snprintf(msg, MSG_BUFFER_SIZE, "STOP");
     client.publish("atthana/shout", msg); // Message to MQTT server.
+    
+    // Send last amount.
     snprintf(msg, MSG_BUFFER_SIZE, sCountValue); 
     client.publish("atthana/shout", msg); // Message to MQTT server.
+    
     Serial.println("END");
     Serial.print("Total = ");
     Serial.println(countValue);
@@ -221,6 +226,7 @@ void loop()
     lcd.print(sCountValue);
     snprintf(msg, MSG_BUFFER_SIZE, sCountValue); 
     client.publish("atthana/shout", msg); // Message to MQTT server.
+    client.publish("atthana/shout", "START1"); // Message to MQTT server.
     ledStatusAndBeeper();
   } 
   

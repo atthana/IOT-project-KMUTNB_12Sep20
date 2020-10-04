@@ -30,7 +30,8 @@ A Small project about counting up the goods to show in Node-Red dashboard.
 
 
 # Slides
-`https://drive.google.com/file/d/1H7SZNtp1VZVn1jjtKr9EnoXbGGBRhRMS/view?usp=sharing`
+<!-- `https://drive.google.com/file/d/1H7SZNtp1VZVn1jjtKr9EnoXbGGBRhRMS/view?usp=sharing`<br> -->
+`https://drive.google.com/file/d/1CCmUCg_7ZmF7bYDz53iN4M3Yju2mNoax/view?usp=sharing`
 ---
 # VS code with Serial monitor
 ![alt text](https://github.com/atthana/IOT-project-KMUTNB_12Sep20/blob/dev-esp8266/Photos/vscode-serialmonitor.jpg?raw=true)
